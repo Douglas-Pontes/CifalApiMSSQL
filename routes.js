@@ -3,8 +3,24 @@ const sql = require("mssql")
 
 router.get('/produtos', (req, res) => {
     const rq = new sql.Request()
-    rq.query('select CodProduto, Desceq, Unideq, Estoque, PerVista from Produtos ', (err, result) => {
-        res.json(result.recordsets)
+    rq.query('select CodProduto, Desceq, Unideq, Estoque, PerVista, CodEan14 from Produtos ', (err, result) => {
+        res.json(result.recordsets[0] || "")
+    })
+})
+
+router.get('/remessas/:NumeroRemessa', (req, res) => {
+    const rq = new sql.Request()
+
+    rq.input("NumeroRemessa", sql.VarChar, req.params.NumeroRemessa)
+    rq.query('select * from tcRemessas where NumeroRemessa = @NumeroRemessa', (err, result) => {
+        res.json(result.recordsets[0] || "")
+    })
+})
+
+router.get('/vendedores', (req, res) => {
+    const rq = new sql.Request()
+    rq.query('select * from tcVendedor ', (err, result) => {
+        res.json(result.recordsets[0] || "")
     })
 })
 
